@@ -1,0 +1,42 @@
+
+
+_SECTION_BEGIN(“EMA-9×26 Crossover by Daily Trade Mantra”);
+
+ 
+SetChartOptions(0,chartShowArrows|chartShowDates);
+_N(Title = StrFormat(“{{NAME}} : {{INTERVAL}} {{DATE}} : Open %g, Hi %g, Lo %g, Close %g (%.1f%%) {{VALUES}}”, O, H, L, C, SelectedValue( ROC( C, 1 ) ) ));
+Plot( C, “Close”, ParamColor(“Color”,colorBlue), styleCandle);
+EMAfast = EMA(C, 9);
+EMAslow = EMA(C, 26);
+
+PriceBuysignal = 0;
+PriceShortsignal = 0;
+
+//Buy and Sell condition
+Buy = Cross(EMAfast, EMAslow);
+Sell = Cross(EMAslow, EMAfast);
+
+Short = Cross(EMAslow, EMAfast);
+Cover = Cross(EMAfast, EMAslow);
+
+Buy = ExRem( Buy, Sell );
+Sell = ExRem( Sell, Buy );
+Cover = ExRem( Cover, Short );
+Short = ExRem( Short, Cover );
+
+//Price to Buy or Sell
+BuyPrice = c;
+SellPrice = c;
+ShortPrice = c;
+CoverPrice = c;
+
+
+Plot(EMA(C,26),”EMA26″,ParamColor(“EMA34Color”,colorLightOrange));
+Plot(EMA(C,9),”EMA9″,ParamColor(“EMA13Color”,colorBrightGreen));
+
+PlotShapes(IIf(Buy, shapeCircle, shapeNone),colorBlue, 0, L, Offset=-20);
+PlotShapes(IIf(Buy, shapeUpArrow, shapeNone),colorWhite, 0,L, Offset=-20);
+PlotShapes(IIf(Sell, shapeCircle, shapeNone),colorRed, 0, H, Offset=40);
+PlotShapes(IIf(Sell, shapeDownArrow, shapeNone),colorWhite, 0,H, Offset=-45);
+
+_SECTION_END();
